@@ -32,12 +32,13 @@ const game = {
     bugInterval: 1000,
     bugKilledBonus: 2000
 };
+
 const scene = {
     points: 0,
     lastCloud: 0,
     lastBug: 0,
     isActiveGame: true,
-}
+};
 
 function onGameStart(event) {
     gameStartRef.classList.add('hide');
@@ -83,10 +84,6 @@ function gameAction(timeStamp) {
     const allCloudsRef = document.querySelectorAll('.cloud');
     const allBugsRef = document.querySelectorAll('.bug');
 
-    // calculating wizard's position on the screen
-    let wizardWidth = player.width + player.x; //width of wizzard + current horizontal positition of the wizard.
-    let wizardHeight = player.height + player.y; //height of wizard + current vertical position of the wizard.
-
     //applying gravity
     let isInAir = player.y + player.height <= gameAreaHeight;
     if (isInAir) {
@@ -95,9 +92,11 @@ function gameAction(timeStamp) {
     }
     //incrementing the points
     countingPoints();
+    pointsRef.textContent = scene.points; //updating the points
 
     addCloud(timeStamp);
     addBugg(timeStamp);
+    checkKey(timeStamp);
 
     //move the fireBalls
     fireBallsRef.forEach(curFireBall => {
@@ -140,8 +139,34 @@ function gameAction(timeStamp) {
             }
         })
     });
+    if (scene.isActiveGame) {
+        window.requestAnimationFrame(gameAction) //infinite loop
+    }
 
-    //changing the wizzard - now it's shooting
+}
+
+function countingPoints() {
+    scene.points++;
+    if (scene.points + 10000 === 0) { //every 10000 points , increase the speed
+        levelUp();
+    }
+}
+
+function onKeyDown(event) {
+    //key pressed
+    keys[event.code] = true;
+}
+function onKeyUp(event) {
+    //key released
+    keys[event.code] = false;
+}
+
+function checkKey(timeStamp) {
+    const wizard = document.querySelector('.wizard');
+    // calculating wizard's position on the screen
+    let wizardWidth = player.width + player.x; //width of wizzard + current horizontal positition of the wizard.
+    let wizardHeight = player.height + player.y; //height of wizard + current vertical position of the wizard.
+
     if (keys.Space && timeStamp - player.lastTimeFiredFireball > game.fireInterval) { //we count the seconds between the current time and the time last ball was shot , should be less than 1000
         wizard.classList.add("wizard-fire");
         addFireBall();
@@ -162,15 +187,11 @@ function gameAction(timeStamp) {
     if (keys.ArrowRight && wizardWidth < gameAreaWidth) {
         player.x += game.speed * game.wizardSpeed;
     }
-    wizard.style.top = player.y + 'px'; //we change the position of the wizard
+    //updating wizard's position
+    wizard.style.top = player.y + 'px';
     wizard.style.left = player.x + 'px';
-    //updating the points 
-    pointsRef.textContent = scene.points;
-
-    if (scene.isActiveGame) {
-        window.requestAnimationFrame(gameAction) //infinite loop
-    }
 }
+
 //clouds
 function addCloud(timeStamp) {
     if (timeStamp - scene.lastCloud > game.cloudInterval + 20000 * Math.random()) { //we slower the creation of the cloud by + 2000 
@@ -210,22 +231,15 @@ function addFireBall() {
     gameAreaRef.appendChild(fireBall);
 }
 
-function onKeyDown(event) {
-    //key pressed
-    keys[event.code] = true;
-}
-function onKeyUp(event) {
-    //key released
-    keys[event.code] = false;
-}
-function isCollision(wizard, bug) {
+
+function isCollision(elementOne, elementTwo) {
     //returns an object holding the top, right, bottom , left, width , height , x , y cordinates of the element
-    let wizardCordi = wizard.getBoundingClientRect(); //accepts dom element
-    let bugCordi = bug.getBoundingClientRect();
-    return !(wizardCordi.top > bugCordi.bottom ||
-        wizardCordi.bottom < bugCordi.top ||
-        wizardCordi.right < bugCordi.left ||
-        wizardCordi.left > bugCordi.right)
+    let elementOneCordi = elementOne.getBoundingClientRect(); //accepts dom element
+    let elementTwoCordi = elementTwo.getBoundingClientRect();
+    return !(elementOneCordi.top > elementTwoCordi.bottom ||
+        elementOneCordi.bottom < elementTwoCordi.top ||
+        elementOneCordi.right < elementTwoCordi.left ||
+        elementOneCordi.left > elementTwoCordi.right)
 }
 function gameOverAction() {
     scene.isActiveGame = false;
@@ -240,10 +254,5 @@ function levelUp() {
     game.wizardSpeed += 0.5;
 
 }
-function countingPoints() {
-    scene.points++;
-    if (scene.points + 10000 === 0) { //every 10000 points , increase the speed
-        levelUp();
-    }
-}
+
 
