@@ -1,0 +1,112 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-size: 32px;
+    font-family: consolas;
+}
+
+.game-area {
+    position: relative;
+    background: linear-gradient(0deg,
+            rgba(61, 160, 244, 1) 0%,
+            rgba(192, 221, 246, 1)33%,
+            rgba(55, 157, 244, 1) 100%);
+    width: 100%;
+    height: 96vh;
+    margin: 0;
+}
+
+.game-start {
+    position: absolute;
+    width: 30%;
+    background-color: rgb(235, 253, 153);
+    border-radius: 30px;
+    top: 100px;
+    /* position it on top of the screen */
+    left: 35%;
+    z-index: 1;
+    /* put itt over z-index 0 , which is our game-area */
+    text-align: center;
+    padding: 30px;
+    /*top bottom left right - 30px */
+}
+
+.game-score {
+    background-color: black;
+    color: white;
+    /*the text inside */
+    text-align: center;
+}
+
+.hide {
+    display: none
+}
+
+.wizard {
+    z-index: 100;
+    /*always on top of the page*/
+    position: absolute;
+    width: 82px;
+    height: 100px;
+    background-image: url("./wizard.png");
+    background-size: cover;
+}
+
+.wizard-fire {
+    background-image: url("./wizard-fire.png");
+    background-size: cover;
+}
+
+.fire-ball {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url("./fire-ball.png");
+    background-size: cover;
+}
+
+.cloud {
+    z-index: 0;
+    position: absolute;
+    width: 200px;
+    /*the size of our cloud*/
+    height: 200px;
+    background-image: url("./cloud.png");
+    background-size: cover;
+    /* backround image covers the whole container*/
+}
+
+.bug {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-image: url('./bug.png');
+    background-size: cover;
+}
+
+.game-over {
+    position: absolute;
+    width: 50%;
+    background-color: red;
+    top: 100px;
+    left: 25%;
+    z-index: 1;
+    text-align: center;
+    padding: 30px;
+}
+
+/* restart button */
+.restart {
+    position: absolute;
+    width: 30%;
+    background-color: green;
+    top: 180px;
+    left: 30%;
+    z-index: 1;
+    text-align: center;
+    padding: 30px;
+    margin: 25px;
+}
