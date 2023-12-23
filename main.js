@@ -25,7 +25,7 @@ const game = {
     //standard speed
     speed: 2, //will move the wizzard with 2px
     bugSpeed: 2,
-    movingSpeed: 4,
+    wizardSpeed: 4,
     fireBallSpeed: 5,
     fireInterval: 1000, //1000mileseonds = 1 second 
     cloudInterval: 3000, //3 seconds
@@ -34,7 +34,6 @@ const game = {
 };
 const scene = {
     points: 0,
-    lastPoints: 0,
     lastCloud: 0,
     lastBug: 0,
     isActiveGame: true,
@@ -66,10 +65,9 @@ function resetGame() {
     player.lastTimeFiredFireball = 0;
 
     game.bugSpeed = 2;
-    game.movingSpeed = 4;
+    game.wizardSpeed = 4;
 
     scene.points = 0;
-    scene.lastPoints = 0;
     scene.lastBug = 0;
     scene.lastCloud = 0;
     scene.isActiveGame = true;
@@ -153,16 +151,16 @@ function gameAction(timeStamp) {
     }
     //updating wizard's position
     if (keys.ArrowUp && player.y > 0) { //0px is the top 
-        player.y -= game.speed * game.movingSpeed;
+        player.y -= game.speed * game.wizardSpeed;
     }
     if (keys.ArrowDown && wizardHeight < gameAreaHeight) { //or isInAir
-        player.y += game.speed * game.movingSpeed;
+        player.y += game.speed * game.wizardSpeed;
     }
     if (keys.ArrowLeft && player.x > 0) { //0 px is left-most
-        player.x -= game.speed * game.movingSpeed;
+        player.x -= game.speed * game.wizardSpeed;
     }
     if (keys.ArrowRight && wizardWidth < gameAreaWidth) {
-        player.x += game.speed * game.movingSpeed;
+        player.x += game.speed * game.wizardSpeed;
     }
     wizard.style.top = player.y + 'px'; //we change the position of the wizard
     wizard.style.left = player.x + 'px';
@@ -175,12 +173,11 @@ function gameAction(timeStamp) {
 }
 //clouds
 function addCloud(timeStamp) {
-    console.log(timeStamp)
     if (timeStamp - scene.lastCloud > game.cloudInterval + 20000 * Math.random()) { //we slower the creation of the cloud by + 2000 
         let cloud = document.createElement('div');
         cloud.classList.add('cloud');
         //position the cloud
-        cloud.x = gameAreaWidth;
+        cloud.x = gameAreaWidth - cloud.offsetWidth;
         cloud.style.left = cloud.x + "px";
         //we ensure that the clouds don't go below the bottom which is gameAreaHeight - 200
         cloud.style.top = (gameAreaHeight - 200) * Math.random() + 'px'; //make the height more unpredictable 
@@ -238,15 +235,15 @@ function gameOverAction() {
 }
 function levelUp() {
     //increase the bug speed
-    game.bugSpeed += 2;
+    game.bugSpeed += 1;
     //increase the wizard speed
-    game.movingSpeed += 1;
+    game.wizardSpeed += 0.5;
 
 }
 function countingPoints() {
     scene.points++;
-    if (scene.points > 15000 && scene.points > scene.lastPoints + 15000) {
+    if (scene.points + 10000 === 0) { //every 10000 points , increase the speed
         levelUp();
-        scene.lastPoints = scene.points;
     }
 }
+
